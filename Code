@@ -1,0 +1,174 @@
+/** Developer: Nevin Morey
+* Purpose: Manage new and existing customers
+* and their order-related data
+*/
+
+import java.util.Scanner;
+
+public class Customer_Database {
+    // Arrays to store customer information
+    public static String[] customerNames = new String[100];
+    public static int[] customerIds = new int[100];
+    public static double[] totalSales = new double[100];
+    public static int customerCount = 0; // Track the number of customers added
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        int choice;
+
+        do {
+            // Display the menu
+            displayMenu();
+            System.out.print("Enter your choice: ");
+            choice = scanner.nextInt();
+            scanner.nextLine();
+
+            // Perform the selected action
+            switch (choice) {
+                case 1:
+                    int numberOfCustomers = promptNumberOfCustomers(scanner);
+                    addMultipleCustomers(scanner, numberOfCustomers);
+                    break;
+                case 2:
+                    addSingleCustomer(scanner);
+                    break;
+                case 3:
+                    displayAllCustomers();
+                    break;
+                case 4:
+                    retrieveCustomerData(scanner);
+                    break;
+                case 5:
+                    retrieveCustomersBySalesRange(scanner);
+                    break;
+                case 9:
+                    System.out.println("Exiting the program. Goodbye!");
+                    break;
+                default:
+                    System.out.println("Invalid choice. Please enter a number on the list.");
+                    break;
+            }
+            System.out.println();
+        } while (choice != 9);
+
+        scanner.close();
+    }
+
+    public static void displayMenu() {
+        System.out.println("Menu");
+        System.out.println("1: Add multiple new customers");
+        System.out.println("2: Add single new customer");
+        System.out.println("3: Display all customers");
+        System.out.println("4: Retrieve specific customer's data");
+        System.out.println("5: Retrieve customers with total sales based on the range");
+        System.out.println("9: Exit");
+    }
+
+    public static int promptNumberOfCustomers(Scanner scanner) {
+        System.out.print("Enter the number of customers to be loaded: ");
+        return scanner.nextInt();
+    }
+
+    public static void addMultipleCustomers(Scanner scanner, int numberOfCustomers) {
+        scanner.nextLine();
+
+        for (int i = 0; i < numberOfCustomers; i++) {
+            System.out.println("\nCustomer " + (i + 1));
+
+            System.out.print("Enter the customer name: ");
+            String customerName = scanner.nextLine();
+
+            System.out.print("Enter the 5-digit customer ID: ");
+            int customerId = scanner.nextInt();
+
+            scanner.nextLine();
+
+            System.out.print("Enter the total sales: ");
+            double sales = scanner.nextDouble();
+
+            scanner.nextLine();
+
+            customerNames[customerCount] = customerName;
+            customerIds[customerCount] = customerId;
+            totalSales[customerCount] = sales;
+            customerCount++;
+
+            System.out.println("Customer added successfully.");
+        }
+    }
+
+
+
+    public static void addSingleCustomer(Scanner scanner) {
+        System.out.print("Enter the customer name: ");
+        String customerName = scanner.nextLine();
+
+        System.out.print("Enter the 5-digit customer ID: ");
+        int customerId = scanner.nextInt();
+
+        System.out.print("Enter the total sales: ");
+        double sales = scanner.nextDouble();
+
+        customerNames[customerCount] = customerName;
+        customerIds[customerCount] = customerId;
+        totalSales[customerCount] = sales;
+        customerCount++;
+
+        System.out.println("\nCustomer added successfully.");
+    }
+
+    public static void displayAllCustomers() {
+        System.out.println("\nAll Customers:");
+        for (int i = 0; i < customerCount; i++) {
+            System.out.println("Customer " + (i + 1));
+            System.out.println("Name: " + customerNames[i]);
+            System.out.println("ID: " + customerIds[i]);
+            System.out.println("Total Sales: " + totalSales[i]);
+            System.out.println();
+        }
+    }
+
+    public static void retrieveCustomerData(Scanner scanner) {
+        System.out.print("\nEnter the customer ID: ");
+        int customerId = scanner.nextInt();
+
+        int index = findCustomerIndex(customerId);
+
+        if (index == -1) {
+            System.out.println("Customer not found.");
+        } else {
+            System.out.println("\nCustomer Details:");
+            System.out.println("Name: " + customerNames[index]);
+            System.out.println("ID: " + customerIds[index]);
+            System.out.println("Total Sales: " + totalSales[index]);
+        }
+    }
+
+    public static void retrieveCustomersBySalesRange(Scanner scanner) {
+        System.out.print("Enter the lowest total sales: ");
+        double lowestSales = scanner.nextDouble();
+
+        System.out.print("Enter the highest total sales: ");
+        double highestSales = scanner.nextDouble();
+
+        System.out.println("\nCustomers in the specified sales range:");
+        for (int i = 0; i < customerCount; i++) {
+            if (totalSales[i] >= lowestSales && totalSales[i] <= highestSales) {
+                System.out.println("Customer " + (i + 1));
+                System.out.println("Name: " + customerNames[i]);
+                System.out.println("ID: " + customerIds[i]);
+                System.out.println("Total Sales: " + totalSales[i]);
+                System.out.println();
+            }
+        }
+    }
+
+    public static int findCustomerIndex(int customerId) {
+        for (int i = 0; i < customerCount; i++) {
+            if (customerIds[i] == customerId) {
+                return i;
+            }
+        }
+        return -1; // Customer not found
+    }
+}
